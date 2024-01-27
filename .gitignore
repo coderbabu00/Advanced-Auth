@@ -1,0 +1,68 @@
+# Node.js
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# dotenv environment variables file
+.env
+
+# Mac OS
+.DS_Store
+
+# JetBrains IDEs
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Node Inspector Config
+.node-inspector
+
+# Cloud9
+.c9/
+
+# Compiled binary addons (node-gyp)
+/build/
+
+# TypeScript
+*.tsbuildinfo
+
+# Yarn
+.yarn/
+.yarnrc
+.yarn-integrity
+
+# Parcel
+.cache/
+.parcel-cache
+
+# Next.js
+.next/
+out/
+.DS_Store
+
+# Nest
+dist/
+
+# Svelte
+__sapper__/
+
+# End of File
