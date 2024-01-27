@@ -1,4 +1,4 @@
-# Advanced Authentication Demo
+# Advanced Authentication Backend Project
 
 This repository showcases advanced authentication functionality implemented from scratch using Node.js and Express.js. The project provides a robust backend where users can experience various authentication features, including OTP verification, password reset, and OTP resend capabilities.
 
