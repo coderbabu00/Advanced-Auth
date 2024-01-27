@@ -12,7 +12,7 @@ This repository showcases advanced authentication functionality implemented from
 
 ## Getting Started:
 
-1. Clone this repository: `git clone https://github.com/your-username/advanced-authentication-demo.git`
+1. Clone this repository: `git clone https://github.com/coderbabu00/advanced-authentication-demo.git`
 2. Navigate to the project folder: `cd advanced-authentication-demo`
 3. Install dependencies: `npm install`
 4. Set up your environment variables in a `.env` file.
