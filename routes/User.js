@@ -171,20 +171,21 @@ router.post("/forgot-password", async (req, res, next) => {
     }
 });
 
-//Password reset 
+// Password reset
 router.post("/reset-password", async (req, res, next) => {
     try {
         const { resetToken, newPassword } = req.body;
 
-        //Finding user on basis of reset token
+        // Finding user on basis of reset token
         const user = await User.findOne({ resetToken });
 
-        if(!user){
-            next(errorHandler(404, "User not found"));
+        if (!user) {
+            return next(errorHandler(404, "User not found"));
         }
 
+
         // Hashing the new Password
-        const hashedPassword=await bcrypt.hash(newPassword, 10);
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         // Updating the password of user
         user.password = hashedPassword;
@@ -192,13 +193,83 @@ router.post("/reset-password", async (req, res, next) => {
         // Removing the reset token
         user.resetToken = undefined;
 
-        //Saving the changes
+        // Saving the changes
         await user.save();
 
         return res.status(200).json({ message: "Password reset successful" });
-    }catch(err){
+    } catch (err) {
         next(err);
     }
-})
+});
+
+
+// Resend OTP
+router.post('/resend-otp', async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        // Find user by email
+        const user = await User.findOne({ email });
+
+        // If user is not present
+        if (!user) {
+            return next(errorHandler(404, "User not found"));
+        }
+
+        // Generate new OTP
+        const newOTP = generateOTP();
+
+        // Save the new OTP to User Model
+        user.otp = newOTP;
+        await user.save();
+
+        // Sending the new OTP to the user via email
+        const mailOptions = {
+            from: process.env.MAIL_FROM,
+            to: user.email,
+            subject: 'Resend OTP - Verify your email',
+            html: `<p>Your new OTP for email verification is: ${newOTP}</p>`,
+        };
+        await transporter.sendMail(mailOptions);
+
+        return res.status(200).json({ message: "New OTP sent to your email" });
+    } catch (err) {
+        next(err);
+    }
+});
+
+// Resend Email Verification Link
+router.post('/resend-verification-link', async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        // Find user by email
+        const user = await User.findOne({ email });
+
+        // If user is not present
+        if (!user) {
+            return next(errorHandler(404, "User not found"));
+        }
+
+        // If user is already verified
+        if (user.verified) {
+            return res.status(400).json({ message: "User is already verified" });
+        }
+
+        // Sending a new verification link to the user via email
+        const mailOptions = {
+            from: process.env.MAIL_FROM,
+            to: user.email,
+            subject: 'Resend Verification Link - Verify your email',
+            html: `<p>Click <a href="${process.env.CLIENT_URL}/verify-email/${user._id}">here</a> to verify your email.</p>`,
+        };
+        await transporter.sendMail(mailOptions);
+
+        return res.status(200).json({ message: "New verification link sent to your email" });
+    } catch (err) {
+        next(err);
+    }
+});
+
 
 module.exports = router;
