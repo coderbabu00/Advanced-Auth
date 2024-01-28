@@ -31,6 +31,17 @@ const userSchema = new mongoose.Schema({
   resetToken: {
     type: String,
   },
+  resetTokenCreatedAt:{
+    type: Date,
+    default: Date.now()
+  },
+  resetTokenExpiry:{
+    type: Date,
+    default: function(){
+      // Set the expiry to one hour from the current time
+      return new Date(+this.resetTokenCreatedAt + 3600000);
+    }
+  },
   Followers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -39,7 +50,7 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }],
-});
+},{timestamps: true});
 
 const User = mongoose.model('User', userSchema);
 

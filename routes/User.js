@@ -171,6 +171,15 @@ router.post("/forgot-password", async (req, res, next) => {
     }
 });
 
+const resetTokenValidityPeriodInMinutes = 60; // Adjust this based on your requirements
+
+// Function to check if the reset token has expired
+const isResetTokenExpired = (createdAt) => {
+    const expirationTime = new Date(createdAt.getTime() + resetTokenValidityPeriodInMinutes * 60000);
+    const currentTime = new Date();
+    return currentTime > expirationTime;
+};
+
 // Password reset
 router.post("/reset-password", async (req, res, next) => {
     try {
@@ -183,6 +192,10 @@ router.post("/reset-password", async (req, res, next) => {
             return next(errorHandler(404, "User not found"));
         }
 
+          // Check if the reset token has expired
+        if (isResetTokenExpired(user.resetTokenCreatedAt)) {
+            return next(errorHandler(400, "Reset token has expired"));
+        }
 
         // Hashing the new Password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
